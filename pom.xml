@@ -129,7 +129,7 @@
                         <manifest>
                             <addClasspath>true</addClasspath>
                             <classpathPrefix>lib/</classpathPrefix>
-                            <mainClass>com.msgrserver.MsgrServerApplication</mainClass>
+                            <mainClass>com.chatkon.backend.ChatkonBackendApplication</mainClass>
                         </manifest>
                     </archive>
                 </configuration>
