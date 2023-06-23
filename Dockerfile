@@ -8,7 +8,6 @@ WORKDIR /app
 COPY mvnw .
 COPY .mvn .mvn
 COPY pom.xml .
-COPY compose.yml .
 
 # Give execute permissions to the mvnw file
 RUN chmod +x mvnw
