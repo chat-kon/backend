@@ -14,6 +14,7 @@ import jakarta.websocket.*;
 import jakarta.websocket.server.ServerEndpoint;
 import lombok.RequiredArgsConstructor;
 import org.glassfish.tyrus.server.Server;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
 import java.nio.ByteBuffer;
@@ -36,6 +37,12 @@ public class WSServerEndpoint {
     private static final Map<Long, Set<Session>> sessions = new HashMap<>();
     private final ActionHandlerFactory actionHandlerFactory;
     private final SessionService sessionService;
+    @Value("${websocket.hostname}")
+    private String hostname;
+    @Value("${websocket.port}")
+    private String port;
+    @Value("${websocket.endpoint}")
+    private String endpoint;
 
     @OnOpen
     public void onOpen(Session session) {
@@ -102,7 +109,7 @@ public class WSServerEndpoint {
 
     @PostConstruct
     public void start() {
-        String[] serverConfig = new String[]{"localhost", "5173", "/", WSServerEndpoint.class.getName()};
+        String[] serverConfig = new String[] { hostname, port, endpoint, WSServerEndpoint.class.getName() };
         new Thread(() -> Server.main(serverConfig)).start();
     }
 
