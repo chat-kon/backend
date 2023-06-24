@@ -8,7 +8,6 @@ import lombok.*;
 @AllArgsConstructor
 @NoArgsConstructor
 @EqualsAndHashCode(callSuper = true)
-public class MessageCommentRequestDto extends ActionDto {
-    String text;
-    Long messageRefId;
+public class MessageGetCommentsRequestDto extends ActionDto {
+    Long messageId;
 }

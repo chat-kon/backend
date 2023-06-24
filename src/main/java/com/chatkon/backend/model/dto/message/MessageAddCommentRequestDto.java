@@ -8,7 +8,7 @@ import lombok.*;
 @AllArgsConstructor
 @NoArgsConstructor
 @EqualsAndHashCode(callSuper = true)
-public class MessageCommentResponseDto extends ActionDto {
-    MessageDto messageDto;
-    MessageDto messageRefDto;
+public class MessageAddCommentRequestDto extends ActionDto {
+    String text;
+    Long messageRefId;
 }
