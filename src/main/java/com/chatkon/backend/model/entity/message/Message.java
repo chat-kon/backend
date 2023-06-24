@@ -24,6 +24,7 @@ public class Message {
     private Long id;
     private Long date;
     private MessageType messageType;
+    private Long views;
 
     @ManyToOne
     private User sender;
@@ -32,7 +33,10 @@ public class Message {
     private Chat chat;
 
     @ManyToOne
-    private User forwardedFrom;
+    private Message forwardMessageRef;
+
+    @ManyToOne
+    private Message replyMessageRef;
 
     @Override
     public boolean equals(Object o) {
