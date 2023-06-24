@@ -8,8 +8,8 @@ import lombok.*;
 @AllArgsConstructor
 @NoArgsConstructor
 @EqualsAndHashCode(callSuper = true)
-public class MessageSendTextRequestDto extends ActionDto {
-    String text;
+public class MessageForwardRequestDto extends ActionDto {
+    // TODO we should copy from this message, and change: forwardedFrom = sender | sender = this user id | update date
+    Long messageId;
     Long receiverId;
-    boolean isPrivate;
 }

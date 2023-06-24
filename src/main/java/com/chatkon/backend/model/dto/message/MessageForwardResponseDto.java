@@ -2,7 +2,6 @@ package com.chatkon.backend.model.dto.message;
 
 import com.chatkon.backend.model.dto.ActionDto;
 import com.chatkon.backend.model.dto.user.UserDto;
-import com.chatkon.backend.model.entity.message.MessageType;
 import lombok.*;
 
 @Data
@@ -10,13 +9,8 @@ import lombok.*;
 @AllArgsConstructor
 @NoArgsConstructor
 @EqualsAndHashCode(callSuper = true)
-public class MessageDto extends ActionDto {
-    Long id;
-    Long senderId;
-    Long chatId;
-    String text;
-    String name;
-    String caption;
-    Long date;
-    MessageType type;
+public class MessageForwardResponseDto extends ActionDto {
+    MessageDto message;
+    UserDto forwardedFrom;
 }
+

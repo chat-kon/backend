@@ -31,6 +31,9 @@ public class Message {
     @ManyToOne
     private Chat chat;
 
+    @ManyToOne
+    private User forwardedFrom;
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
