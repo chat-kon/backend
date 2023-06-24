@@ -22,6 +22,7 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
+import java.util.concurrent.CountDownLatch;
 import java.util.logging.Logger;
 
 @RequiredArgsConstructor
@@ -109,8 +110,21 @@ public class WSServerEndpoint {
 
     @PostConstruct
     public void start() {
-        String[] serverConfig = new String[] { hostname, port, endpoint, WSServerEndpoint.class.getName() };
-        new Thread(() -> Server.main(serverConfig)).start();
+        CountDownLatch latch = new CountDownLatch(1);
+        new Thread(() -> {
+            Server server = new Server(hostname, Integer.parseInt(port), endpoint, null, WSServerEndpoint.class);
+            try {
+                server.start();
+                System.out.println("WebSocket server started");
+                latch.await();
+            } catch (DeploymentException | InterruptedException e) {
+                e.printStackTrace();
+            } finally {
+                server.stop();
+            }
+        }).start();
+
+        Runtime.getRuntime().addShutdownHook(new Thread(latch::countDown));
     }
 
     private boolean tokenRequired(ActionType actionType) {
