@@ -1,27 +1,15 @@
-# Use the official OpenJDK image as the base
-FROM openjdk:17-alpine
-
-# Set the working directory
+FROM maven:3.8.1-openjdk-17-slim AS dependencies
 WORKDIR /app
+COPY pom.xml .
+RUN mvn dependency:go-offline
 
-# Copy files into the working directory
-COPY . .
+FROM dependencies AS build
+COPY src/ /app/src/
+RUN mvn package -DskipTests
 
-# Give execute permissions to the mvnw file
-RUN chmod +x mvnw
-
-# Install dos2unix
-RUN apk update && apk add dos2unix
-
-# Convert the line endings of the mvnw file to Unix-style (LF)
-RUN dos2unix mvnw
-
-# Install dependencies
-RUN ./mvnw dependency:go-offline
-
-# Expose the application port
+FROM openjdk:17-jdk-alpine3.14 AS production
+WORKDIR /app
+COPY --from=build /app/target/*.jar app.jar
 EXPOSE 8080
 EXPOSE 5173
-
-# Run the application
-CMD ["./mvnw", "spring-boot:run"]
+CMD ["java", "-jar", "app.jar"]
