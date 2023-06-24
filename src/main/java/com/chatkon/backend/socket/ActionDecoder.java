@@ -11,9 +11,10 @@ public class ActionDecoder implements Decoder.Text<Action> {
     @Override
     public Action decode(String jsonMessage) {
         try {
-            EncryptDecrypt encryptDecrypt = new EncryptDecrypt();
-            String decrypt = encryptDecrypt.decrypt(jsonMessage);
-            return Mapper.fromJson(decrypt, Action.class);
+//            EncryptDecrypt encryptDecrypt = new EncryptDecrypt();
+//            String decrypt = encryptDecrypt.decrypt(jsonMessage);
+//            return Mapper.fromJson(decrypt, Action.class);
+            return Mapper.fromJson(jsonMessage, Action.class);
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
