@@ -15,7 +15,7 @@ public class MessageRate {
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
 
-    private double rate;
+    private Double rate;
 
     @ManyToOne
     private User user;

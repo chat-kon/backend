@@ -22,6 +22,6 @@ public class MessageDto extends ActionDto {
     String caption;
     Long date;
     MessageType type;
-    double averageRate;
-    double userRate;
+    Double averageRate;
+    Double userRate;
 }

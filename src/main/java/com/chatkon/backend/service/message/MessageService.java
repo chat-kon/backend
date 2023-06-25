@@ -15,4 +15,6 @@ public interface MessageService {
     Long deleteMessage(Long deleterId, Long messageId);
 
     Message findMessage(Long messageId);
+
+    Double rateMessage(Long userId, Long messageId, Double rate);
 }
