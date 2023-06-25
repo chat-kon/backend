@@ -153,4 +153,22 @@ public class MessageServiceImpl implements MessageService {
     public Double getUserRateOnMessage(Long userId, Long messageId) {
         return messageRateRepository.getRateByMessageIdAndUserId(messageId, userId);
     }
+
+    @Override
+    public TextMessage forwardMessage(Long userId, Long messageId, Long chatId) {
+        var chat = findChat(chatId);
+        var user = findUser(userId);
+        TextMessage refMessage = (TextMessage) findMessage(messageId);
+
+        var newMessage = TextMessage.builder()
+                .text(refMessage.getText())
+                .messageType(refMessage.getMessageType())
+                .forwardMessageRef(refMessage)
+                .sender(user)
+                .chat(chat)
+                .date(System.currentTimeMillis())
+                .build();
+
+        return messageRepository.save(newMessage);
+    }
 }
