@@ -40,7 +40,8 @@ public class MessageRateHandler  implements ActionHandler<MessageRateRequestDto>
         Message message = messageService.findMessage(dto.getMessageId());
         Set<Long> receivers = getReceivers(message);
 
-        Double averageRate = messageService.rateMessage(userId, dto.getMessageId(), dto.getRate());
+         messageService.rateMessage(userId, dto.getMessageId(), dto.getRate());
+         var averageRate = messageService.getAverageRate(dto.getMessageId());
 
         MessageRateResponseDto responseDto = MessageRateResponseDto.builder()
                 .messageId(dto.getMessageId())

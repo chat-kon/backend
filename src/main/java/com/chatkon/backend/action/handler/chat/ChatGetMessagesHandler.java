@@ -8,7 +8,9 @@ import com.chatkon.backend.model.dto.chat.ChatGetMessagesRequestDto;
 import com.chatkon.backend.model.dto.chat.ChatGetMessagesResponseDto;
 import com.chatkon.backend.model.dto.message.MessageDto;
 import com.chatkon.backend.model.dto.user.UserDto;
+import com.chatkon.backend.model.entity.message.MessageRate;
 import com.chatkon.backend.service.chat.ChatService;
+import com.chatkon.backend.service.message.MessageService;
 import com.chatkon.backend.util.Mapper;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
@@ -20,6 +22,7 @@ import java.util.Set;
 @RequiredArgsConstructor
 public class ChatGetMessagesHandler implements ActionHandler<ChatGetMessagesRequestDto> {
     private final ChatService chatService;
+    private final MessageService messageService;
 
     @Override
     public ActionType type() {
@@ -36,6 +39,9 @@ public class ChatGetMessagesHandler implements ActionHandler<ChatGetMessagesRequ
             MessageDto messageDto = Mapper.map(message, MessageDto.class);
             messageDto.setSenderId(message.getSender().getId());
             messageDto.setChatId(message.getChat().getId());
+            messageDto.setAverageRate(messageService.getAverageRate(messageDto.getId()));
+            var userRate = messageService.getUserRateOnMessage(userId, messageDto.getId());
+            if (userRate != null) messageDto.setUserRate(userRate);
             UserDto userDto = Mapper.map(message.getSender(), UserDto.class);
             messages.add(messageDto);
             users.add(userDto);

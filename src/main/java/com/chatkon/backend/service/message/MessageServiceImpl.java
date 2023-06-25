@@ -124,9 +124,15 @@ public class MessageServiceImpl implements MessageService {
     }
 
     @Override
-    public Double rateMessage(Long userId, Long messageId, Double rate) {
+    public MessageRate rateMessage(Long userId, Long messageId, Double rate) {
         var user = findUser(userId);
         var message = findMessage(messageId);
+        var forwardMessage = message.getForwardMessageRef();
+        var replayMessage = message.getReplyMessageRef();
+        if (forwardMessage != null)
+            message = forwardMessage;
+        else if (replayMessage != null)
+            message = replayMessage;
 
         MessageRate messageRate = MessageRate
                 .builder()
@@ -135,7 +141,16 @@ public class MessageServiceImpl implements MessageService {
                 .rate(rate)
                 .build();
 
-        messageRateRepository.save(messageRate);
-        return messageRateRepository.getAverageRateByMessageId(messageId);
+        return messageRateRepository.save(messageRate);
+    }
+
+    @Override
+    public Double getAverageRate(Long messageId) {
+        return messageRateRepository.getAverageRateByMessageId(messageId).orElseThrow(MessageNotFoundException::new);
+    }
+
+    @Override
+    public Double getUserRateOnMessage(Long userId, Long messageId) {
+        return messageRateRepository.getRateByUserId(userId, messageId);
     }
 }

@@ -2,6 +2,7 @@ package com.chatkon.backend.service.message;
 
 import com.chatkon.backend.model.entity.message.BinaryMessage;
 import com.chatkon.backend.model.entity.message.Message;
+import com.chatkon.backend.model.entity.message.MessageRate;
 import com.chatkon.backend.model.entity.message.TextMessage;
 
 public interface MessageService {
@@ -15,5 +16,9 @@ public interface MessageService {
 
     Message findMessage(Long messageId);
 
-    Double rateMessage(Long userId, Long messageId, Double rate);
+    MessageRate rateMessage(Long userId, Long messageId, Double rate);
+
+    Double getAverageRate(Long messageId);
+
+    Double getUserRateOnMessage(Long userId, Long messageId);
 }
