@@ -126,13 +126,7 @@ public class MessageServiceImpl implements MessageService {
     @Override
     public MessageRate rateMessage(Long userId, Long messageId, Double rate) {
         var user = findUser(userId);
-        var message = findMessage(messageId);
-        var forwardMessage = message.getForwardMessageRef();
-        var replayMessage = message.getReplyMessageRef();
-        if (forwardMessage != null)
-            message = forwardMessage;
-        else if (replayMessage != null)
-            message = replayMessage;
+        Message message = findRefMessageOrThis(messageId);
 
         MessageRate messageRate = MessageRate
                 .builder()
@@ -144,14 +138,29 @@ public class MessageServiceImpl implements MessageService {
         return messageRateRepository.save(messageRate);
     }
 
+    private Message findRefMessageOrThis(Long messageId) {
+        var message = findMessage(messageId);
+        var forwardMessage = message.getForwardMessageRef();
+        var replayMessage = message.getReplyMessageRef();
+
+        if (forwardMessage != null)
+            message = forwardMessage;
+        else if (replayMessage != null)
+            message = replayMessage;
+
+        return message;
+    }
+
     @Override
     public Double getAverageRate(Long messageId) {
-        return messageRateRepository.getAverageRateByMessageId(messageId).orElseThrow(MessageNotFoundException::new);
+        Message message = findRefMessageOrThis(messageId);
+        return messageRateRepository.getAverageRateByMessageId(message.getId()).orElseThrow(MessageNotFoundException::new);
     }
 
     @Override
     public Double getUserRateOnMessage(Long userId, Long messageId) {
-        return messageRateRepository.getRateByMessageIdAndUserId(messageId, userId);
+        Message message = findRefMessageOrThis(messageId);
+        return messageRateRepository.getRateByMessageIdAndUserId(message.getId(), userId);
     }
 
     @Override
