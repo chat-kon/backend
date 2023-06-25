@@ -8,7 +8,7 @@ import com.chatkon.backend.model.entity.message.TextMessage;
 public interface MessageService {
     TextMessage createText(Long chatId, Long senderId, TextMessage textMessage);
 
-    BinaryMessage saveFile(BinaryMessage binaryMessage);
+    BinaryMessage saveFile(Long chatId, Long senderId, BinaryMessage binaryMessage);
 
     Message getLastMessage(Long chatId);
 
