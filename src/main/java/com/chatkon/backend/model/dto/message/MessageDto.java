@@ -19,6 +19,7 @@ public class MessageDto extends ActionDto {
     MessageReplayDto messageReplayDto;
     String text;
     String name;
+    Byte[] data;
     String caption;
     Long date;
     MessageType type;

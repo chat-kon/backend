@@ -9,10 +9,7 @@ import com.chatkon.backend.model.entity.chat.Chat;
 import com.chatkon.backend.model.entity.chat.ChatType;
 import com.chatkon.backend.model.entity.chat.PrivateChat;
 import com.chatkon.backend.model.entity.chat.PublicChat;
-import com.chatkon.backend.model.entity.message.BinaryMessage;
-import com.chatkon.backend.model.entity.message.Message;
-import com.chatkon.backend.model.entity.message.MessageRate;
-import com.chatkon.backend.model.entity.message.TextMessage;
+import com.chatkon.backend.model.entity.message.*;
 import com.chatkon.backend.model.entity.user.User;
 import com.chatkon.backend.repository.*;
 import lombok.RequiredArgsConstructor;
@@ -31,11 +28,8 @@ public class MessageServiceImpl implements MessageService {
 
     @Override
     public TextMessage createText(Long chatId, Long senderId, TextMessage textMessage) {
-
         User sender = findUser(senderId);
         Chat chat = findChat(chatId);
-
-        // todo create private chat if not exist
 
         if (chat instanceof PublicChat) {
             checkPublicChatAccess(sender, (PublicChat) chat);
@@ -48,13 +42,33 @@ public class MessageServiceImpl implements MessageService {
 
         textMessage.setDate(System.currentTimeMillis());
         textMessage.setId(null);
+        textMessage.setMessageType(MessageType.TEXT);
 
         return messageRepository.save(textMessage);
     }
 
     @Override
-    public BinaryMessage saveFile(BinaryMessage binaryMessage) {
-        return null;
+    public BinaryMessage saveFile(Long chatId, Long senderId, BinaryMessage binaryMessage) {
+        if (binaryMessage.getMessageType() == null || binaryMessage.getMessageType().equals(MessageType.TEXT)) {
+            throw new BadRequestException("MessageType " + binaryMessage.getMessageType() + " is either null or not binary.");
+        }
+
+        User sender = findUser(senderId);
+        Chat chat = findChat(chatId);
+
+        if (chat instanceof PublicChat) {
+            checkPublicChatAccess(sender, (PublicChat) chat);
+        } else if (chat instanceof PrivateChat) {
+            checkPrivateChatAccess(sender, (PrivateChat) chat);
+        }
+
+        binaryMessage.setSender(sender);
+        binaryMessage.setChat(chat);
+
+        binaryMessage.setDate(System.currentTimeMillis());
+        binaryMessage.setId(null);
+
+        return messageRepository.save(binaryMessage);
     }
 
     @Override
