@@ -47,7 +47,7 @@ public class MessageSendTextHandler implements ActionHandler<MessageSendTextRequ
         Long chatId;
         if (dto.isPrivate()) {
 
-            long receiverId = dto.getToId();
+            long receiverId = dto.getReceiverId();
             Optional<PrivateChat> chat = privateChatService.findPrivateChat(userId, receiverId);
 
             if (chat.isEmpty()) {
@@ -57,7 +57,7 @@ public class MessageSendTextHandler implements ActionHandler<MessageSendTextRequ
             chatId = chat.get().getId();
 
         } else {
-            chatId = dto.getToId();
+            chatId = dto.getReceiverId();
         }
 
         TextMessage newMessage = messageService.createText(
