@@ -10,6 +10,6 @@ import lombok.*;
 @EqualsAndHashCode(callSuper = true)
 public class MessageSendTextRequestDto extends ActionDto {
     String text;
-    Long receiverId;
+    Long toId;
     boolean isPrivate;
 }
