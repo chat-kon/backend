@@ -37,17 +37,15 @@ public class MessageRateHandler  implements ActionHandler<MessageRateRequestDto>
 
     @Override
     public ActionResult handle(Long userId, MessageRateRequestDto dto) {
-        // TODO implement it
-
         Message message = messageService.findMessage(dto.getMessageId());
         Set<Long> receivers = getReceivers(message);
 
-        // call service
-        //Double averageRate = messageService.rateMessage(userId, dto.getMessageId(), dto.getRate());
+         messageService.rateMessage(userId, dto.getMessageId(), dto.getRate());
+         var averageRate = messageService.getAverageRate(dto.getMessageId());
 
         MessageRateResponseDto responseDto = MessageRateResponseDto.builder()
                 .messageId(dto.getMessageId())
-                //.averageRate(averageRate)
+                .averageRate(averageRate)
                 .build();
 
         Action action = Action.builder()
