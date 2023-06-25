@@ -24,7 +24,7 @@ public enum ActionType {
     REPLAY_MESSAGE,
     FORWARD_MESSAGE,
     RATE_MESSAGE,
-    COMMENT_MESSAGE,
+    ADD_COMMENT_MESSAGE,
     GET_CONTACTS,
     ERROR
 }
