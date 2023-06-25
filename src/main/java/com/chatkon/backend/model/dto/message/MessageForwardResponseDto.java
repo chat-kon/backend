@@ -11,6 +11,5 @@ import lombok.*;
 @EqualsAndHashCode(callSuper = true)
 public class MessageForwardResponseDto extends ActionDto {
     MessageDto message;
-    UserDto forwardedFrom;
 }
 

@@ -6,15 +6,21 @@ import com.chatkon.backend.action.ActionResult;
 import com.chatkon.backend.action.ActionType;
 import com.chatkon.backend.action.handler.ActionHandler;
 import com.chatkon.backend.exception.NotImplementedException;
+import com.chatkon.backend.model.dto.message.MessageDto;
 import com.chatkon.backend.model.dto.message.MessageForwardRequestDto;
 import com.chatkon.backend.model.dto.message.MessageForwardResponseDto;
 import com.chatkon.backend.model.dto.message.MessageReplayResponseDto;
+import com.chatkon.backend.model.dto.user.UserForwardDto;
+import com.chatkon.backend.model.entity.chat.Chat;
 import com.chatkon.backend.model.entity.chat.PrivateChat;
 import com.chatkon.backend.model.entity.chat.PublicChat;
 import com.chatkon.backend.model.entity.message.Message;
+import com.chatkon.backend.model.entity.message.TextMessage;
 import com.chatkon.backend.model.entity.user.User;
+import com.chatkon.backend.service.chat.ChatService;
 import com.chatkon.backend.service.chat.PublicChatService;
 import com.chatkon.backend.service.message.MessageService;
+import com.chatkon.backend.util.Mapper;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 
@@ -27,6 +33,7 @@ import java.util.stream.Collectors;
 @RequiredArgsConstructor
 public class MessageForwardHandler implements ActionHandler<MessageForwardRequestDto> {
     private final MessageService messageService;
+    private final ChatService chatService;
     private final PublicChatService publicChatService;
 
     @Override
@@ -36,14 +43,14 @@ public class MessageForwardHandler implements ActionHandler<MessageForwardReques
 
     @Override
     public ActionResult handle(Long userId, MessageForwardRequestDto dto) {
-        // TODO implement it
+        Chat chat = chatService.findChat(dto.getChatId());
+        Set<Long> receivers = getReceivers(chat);
 
-        Message message = messageService.findMessage(dto.getMessageId());
-        Set<Long> receivers = getReceivers(message);
-
-        // call service
+        var message = messageService.forwardMessage(userId, dto.getMessageId(), dto.getChatId());
+        MessageDto messageDto = getMessageDto(userId, message);
 
         MessageForwardResponseDto responseDto = MessageForwardResponseDto.builder()
+                .message(messageDto)
                 .build();
 
         Action action = Action.builder()
@@ -57,14 +64,29 @@ public class MessageForwardHandler implements ActionHandler<MessageForwardReques
                 .build();
     }
 
-    private Set<Long> getReceivers(Message message) {
+    private MessageDto getMessageDto(Long userId, TextMessage message) {
+        MessageDto messageDto = Mapper.map(message, MessageDto.class);
+
+        User messageSender = message.getForwardMessageRef().getSender();
+        var userForwardFrom = UserForwardDto.builder()
+                .id(messageSender.getId())
+                .name(messageSender.getName())
+                .build();
+
+        messageDto.setUserForwardDto(userForwardFrom);
+        messageDto.setUserRate(messageService.getUserRateOnMessage(userId, message.getId()));
+        messageDto.setAverageRate(messageService.getAverageRate(message.getId()));
+        return messageDto;
+    }
+
+    private Set<Long> getReceivers(Chat chat) {
         Set<Long> receivers;
 
-        if (message.getChat() instanceof PrivateChat chat) {
-            receivers = new HashSet<>(List.of(chat.getUser1().getId(), chat.getUser2().getId()));
+        if (chat instanceof PrivateChat privateChat) {
+            receivers = new HashSet<>(List.of(privateChat.getUser1().getId(), privateChat.getUser2().getId()));
 
-        } else if (message.getChat() instanceof PublicChat chat) {
-            receivers = publicChatService.getChatMembers(chat.getId()).stream()
+        } else if (chat instanceof PublicChat publicChat) {
+            receivers = publicChatService.getChatMembers(publicChat.getId()).stream()
                     .map(User::getId)
                     .collect(Collectors.toSet());
         } else {
