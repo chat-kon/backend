@@ -24,12 +24,19 @@ public class Message {
     private Long id;
     private Long date;
     private MessageType messageType;
+    private Long views;
 
     @ManyToOne
     private User sender;
 
     @ManyToOne
     private Chat chat;
+
+    @ManyToOne
+    private Message forwardMessageRef;
+
+    @ManyToOne
+    private Message replyMessageRef;
 
     @Override
     public boolean equals(Object o) {

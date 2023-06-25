@@ -1,8 +1,6 @@
 package com.chatkon.backend.model.dto.message;
 
 import com.chatkon.backend.model.dto.ActionDto;
-import com.chatkon.backend.model.dto.user.UserDto;
-import com.chatkon.backend.model.dto.user.UserForwardDto;
 import com.chatkon.backend.model.entity.message.MessageType;
 import lombok.*;
 
@@ -11,17 +9,13 @@ import lombok.*;
 @AllArgsConstructor
 @NoArgsConstructor
 @EqualsAndHashCode(callSuper = true)
-public class MessageDto extends ActionDto {
+public class MessageCommentDto extends ActionDto {
     Long id;
     Long senderId;
-    Long chatId;
-    UserForwardDto userForwardDto;
-    MessageReplayDto messageReplayDto;
+    Long messageRefId;
     String text;
     String name;
     String caption;
     Long date;
     MessageType type;
-    double averageRate;
-    double userRate;
 }
