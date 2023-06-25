@@ -7,7 +7,7 @@ import org.springframework.data.jpa.repository.Query;
 import java.util.Optional;
 
 public interface MessageRateRepository extends JpaRepository<MessageRate, Long> {
-    @Query(value = "SELECT AVG(rate) FROM MessageRate WHERE messageId = ?1", nativeQuery = true)
+    @Query(value = "SELECT AVG(m.rate) FROM MessageRate m WHERE m.id = ?1")
     Optional<Double> getAverageRateByMessageId(Long messageId);
 
     Double getRateByMessageIdAndUserId(Long messageId, Long userId);

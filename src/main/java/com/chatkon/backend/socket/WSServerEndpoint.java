@@ -94,7 +94,7 @@ public class WSServerEndpoint {
         if (err instanceof BadRequestException) {
             action.setError(err.getClass().getSimpleName());
         } else {
-            action.setError("Server Error");
+            action.setError(err.getMessage());
         }
 
         session.getAsyncRemote().sendObject(action);
