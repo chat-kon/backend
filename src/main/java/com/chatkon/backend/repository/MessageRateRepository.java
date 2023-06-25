@@ -10,5 +10,5 @@ public interface MessageRateRepository extends JpaRepository<MessageRate, Long> 
     @Query(value = "SELECT AVG(rate) FROM MessageRate WHERE messageId = ?1", nativeQuery = true)
     Optional<Double> getAverageRateByMessageId(Long messageId);
 
-    Double getRateByUserId(Long userId, Long messageId);
+    Double getRateByMessageIdAndUserId(Long messageId, Long userId);
 }

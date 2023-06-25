@@ -151,6 +151,6 @@ public class MessageServiceImpl implements MessageService {
 
     @Override
     public Double getUserRateOnMessage(Long userId, Long messageId) {
-        return messageRateRepository.getRateByUserId(userId, messageId);
+        return messageRateRepository.getRateByMessageIdAndUserId(messageId, userId);
     }
 }
