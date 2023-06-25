@@ -10,5 +10,5 @@ import lombok.*;
 @EqualsAndHashCode(callSuper = true)
 public class MessageRateResponseDto extends ActionDto {
     Long messageId;
-    double averageRate;
+    Double averageRate;
 }
