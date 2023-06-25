@@ -21,4 +21,6 @@ public interface MessageService {
     Double getAverageRate(Long messageId);
 
     Double getUserRateOnMessage(Long userId, Long messageId);
+
+    TextMessage forwardMessage(Long userId, Long messageId, Long chatId);
 }

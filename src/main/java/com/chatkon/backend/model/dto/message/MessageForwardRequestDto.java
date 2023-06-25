@@ -11,5 +11,5 @@ import lombok.*;
 public class MessageForwardRequestDto extends ActionDto {
     // TODO we should copy from this message, and change: forwardedFrom = sender | sender = this user id | update date
     Long messageId;
-    Long receiverId;
+    Long chatId;
 }
