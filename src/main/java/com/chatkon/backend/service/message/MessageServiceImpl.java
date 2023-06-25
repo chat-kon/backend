@@ -11,6 +11,7 @@ import com.chatkon.backend.model.entity.chat.PrivateChat;
 import com.chatkon.backend.model.entity.chat.PublicChat;
 import com.chatkon.backend.model.entity.message.BinaryMessage;
 import com.chatkon.backend.model.entity.message.Message;
+import com.chatkon.backend.model.entity.message.MessageRate;
 import com.chatkon.backend.model.entity.message.TextMessage;
 import com.chatkon.backend.model.entity.user.User;
 import com.chatkon.backend.repository.*;
@@ -26,6 +27,7 @@ public class MessageServiceImpl implements MessageService {
     private final UserRepository userRepository;
     private final MemberRepository memberRepository;
     private final AdminRepository adminRepository;
+    private final MessageRateRepository messageRateRepository;
 
     @Override
     public TextMessage createText(Long chatId, Long senderId, TextMessage textMessage) {
@@ -119,5 +121,21 @@ public class MessageServiceImpl implements MessageService {
     @Override
     public Message findMessage(Long messageId) {
         return messageRepository.findById(messageId).orElseThrow(MessageNotFoundException::new);
+    }
+
+    @Override
+    public Double rateMessage(Long userId, Long messageId, Double rate) {
+        var user = findUser(userId);
+        var message = findMessage(messageId);
+
+        MessageRate messageRate = MessageRate
+                .builder()
+                .user(user)
+                .message(message)
+                .rate(rate)
+                .build();
+
+        messageRateRepository.save(messageRate);
+        return messageRateRepository.getAverageRateByMessageId(messageId);
     }
 }

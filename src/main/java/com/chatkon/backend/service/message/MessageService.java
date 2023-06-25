@@ -5,7 +5,6 @@ import com.chatkon.backend.model.entity.message.Message;
 import com.chatkon.backend.model.entity.message.TextMessage;
 
 public interface MessageService {
-
     TextMessage createText(Long chatId, Long senderId, TextMessage textMessage);
 
     BinaryMessage saveFile(BinaryMessage binaryMessage);
@@ -15,4 +14,6 @@ public interface MessageService {
     Long deleteMessage(Long deleterId, Long messageId);
 
     Message findMessage(Long messageId);
+
+    Double rateMessage(Long userId, Long messageId, Double rate);
 }
