@@ -6,6 +6,7 @@ import com.chatkon.backend.action.ActionType;
 import com.chatkon.backend.action.handler.ActionHandler;
 import com.chatkon.backend.model.dto.chat.ChatDto;
 import com.chatkon.backend.model.dto.message.MessageDto;
+import com.chatkon.backend.model.dto.user.UserChatDto;
 import com.chatkon.backend.model.dto.user.UserDto;
 import com.chatkon.backend.model.dto.user.UserGetChatsRequestDto;
 import com.chatkon.backend.model.dto.user.UserGetChatsResponseDto;
@@ -53,14 +54,19 @@ public class UserGetChatsHandler implements ActionHandler<UserGetChatsRequestDto
         Set<ChatDto> chats = new HashSet<>();
         Set<UserDto> users = new HashSet<>();
         Set<MessageDto> messages = new HashSet<>();
+        Set<UserChatDto> userChatDto = new HashSet<>();
 
         User self = userService.findUser(userId);
         users.add(Mapper.map(self, UserDto.class));
 
         userService.getUserChats(userId).forEach(chat -> {
+            var userChatDtoBuilder= UserChatDto.builder();
 
             ChatDto chatDto = Mapper.map(chat, ChatDto.class);
+
             chats.add(chatDto);
+            userChatDtoBuilder.chatId(chatDto.getId());
+
 
             if (chat instanceof PrivateChat privateChat) {
                 User user = privateChat.getParticipant(userId);
@@ -68,7 +74,13 @@ public class UserGetChatsHandler implements ActionHandler<UserGetChatsRequestDto
                 chatDto.setUser2Id(user.getId());
 
                 UserDto userDto = Mapper.map(user, UserDto.class);
+                chatDto.setTitle(userDto.getName());
+
+
                 users.add(userDto);
+                userChatDtoBuilder.userId(user.getId());
+                userChatDtoBuilder.username(user.getUsername());
+                userChatDtoBuilder.title(user.getName());
             }
 
             var lastMessage = messageService.getLastMessage(chat.getId());
@@ -82,14 +94,17 @@ public class UserGetChatsHandler implements ActionHandler<UserGetChatsRequestDto
                 MessageDto messageDto = Mapper.map(lastMessage, MessageDto.class);
                 messageDto.setSenderId(lastMessage.getSender().getId());
                 messageDto.setChatId(lastMessage.getChat().getId());
+
+
                 messages.add(messageDto);
+                userChatDtoBuilder.lastMessage(messageDto.getText());
+                userChatDtoBuilder.date(messageDto.getDate());
+                userChatDto.add(userChatDtoBuilder.build());
             }
         });
 
         return UserGetChatsResponseDto.builder()
-                .users(users)
-                .chats(chats)
-                .messages(messages)
+                .chats(userChatDto)
                 .build();
     }
 }
