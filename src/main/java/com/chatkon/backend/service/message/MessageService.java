@@ -22,5 +22,7 @@ public interface MessageService {
 
     Double getUserRateOnMessage(Long userId, Long messageId);
 
+    Long getMessageViewCount(Long messageId);
+
     TextMessage forwardMessage(Long userId, Long messageId, Long chatId);
 }

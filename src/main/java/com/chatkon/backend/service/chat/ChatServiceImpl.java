@@ -27,6 +27,7 @@ public class ChatServiceImpl implements ChatService {
     private final AdminRepository adminRepository;
     private final MemberRepository memberRepository;
     private final PrivateChatRepository privateChatRepository;
+    private final MessageViewRepository messageViewRepository;
 
     @Override
     public Chat findChat(Long chatId) {
@@ -50,7 +51,9 @@ public class ChatServiceImpl implements ChatService {
         if (!isMember)
             throw new BadRequestException();
 
-        return messageRepository.findMessagesByChatId(chatId);
+        var messages = messageRepository.findMessagesByChatId(chatId);
+        messages.forEach(message -> messageViewRepository.incrementViewCount(userId, message.getId()));
+        return messages;
     }
 
     @Transactional

@@ -25,6 +25,7 @@ public class MessageServiceImpl implements MessageService {
     private final MemberRepository memberRepository;
     private final AdminRepository adminRepository;
     private final MessageRateRepository messageRateRepository;
+    private final MessageViewRepository messageViewRepository;
 
     @Override
     public TextMessage createText(Long chatId, Long senderId, TextMessage textMessage) {
@@ -175,6 +176,12 @@ public class MessageServiceImpl implements MessageService {
     public Double getUserRateOnMessage(Long userId, Long messageId) {
         Message message = findRefMessageOrThis(messageId);
         return messageRateRepository.getRateByMessageIdAndUserId(message.getId(), userId);
+    }
+
+    @Override
+    public Long getMessageViewCount(Long messageId) {
+        Message message = findRefMessageOrThis(messageId);
+        return messageViewRepository.getViewCountByMessageId(message.getId()).orElse(0L);
     }
 
     @Override

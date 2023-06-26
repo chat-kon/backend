@@ -42,6 +42,7 @@ public class ChatGetMessagesHandler implements ActionHandler<ChatGetMessagesRequ
             messageDto.setAverageRate(messageService.getAverageRate(messageDto.getId()));
             var userRate = messageService.getUserRateOnMessage(userId, messageDto.getId());
             if (userRate != null) messageDto.setUserRate(userRate);
+            messageDto.setViews(messageService.getMessageViewCount(messageDto.getId()));
             UserDto userDto = Mapper.map(message.getSender(), UserDto.class);
             messages.add(messageDto);
             users.add(userDto);
