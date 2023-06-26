@@ -25,4 +25,5 @@ public class MessageDto extends ActionDto {
     MessageType type;
     Double averageRate;
     Double userRate;
+    Long views;
 }
