@@ -43,6 +43,7 @@ public class MessageSendTextHandler implements ActionHandler<MessageSendTextRequ
 
     @Override
     public ActionResult handle(Long userId, MessageSendTextRequestDto dto) {
+        dto.setPrivate(true);
 
         Long chatId;
         if (dto.isPrivate()) {
