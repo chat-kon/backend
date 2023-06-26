@@ -89,9 +89,9 @@ public class WSServerEndpoint {
                 .build();
 
         if (err instanceof BadRequestException) {
-            action.setError("type: " + err.getClass().getSimpleName() + ", message: " + err.getMessage() + "stacktrace: " + Arrays.toString(err.getStackTrace()));
+            action.setError(err.getClass().getSimpleName());
         } else {
-            action.setError("message: " + err.getMessage() + ", stacktrace: " + Arrays.toString(err.getStackTrace()));
+            action.setError(err.getMessage());
         }
 
         session.getAsyncRemote().sendObject(action);
