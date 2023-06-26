@@ -18,10 +18,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
 import java.nio.ByteBuffer;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 import java.util.concurrent.CountDownLatch;
 import java.util.logging.Logger;
 
@@ -92,9 +89,9 @@ public class WSServerEndpoint {
                 .build();
 
         if (err instanceof BadRequestException) {
-            action.setError(err.getClass().getSimpleName());
+            action.setError("type: " + err.getClass().getSimpleName() + ", message: " + err.getMessage() + "stacktrace: " + Arrays.toString(err.getStackTrace()));
         } else {
-            action.setError(err.getMessage());
+            action.setError("message: " + err.getMessage() + ", stacktrace: " + Arrays.toString(err.getStackTrace()));
         }
 
         session.getAsyncRemote().sendObject(action);
